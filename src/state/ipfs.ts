@@ -1,10 +1,11 @@
-import { create } from '@web3-storage/w3up-client';
-
 // Singleton client promise
-let clientPromise: ReturnType<typeof create> | null = null;
+let clientPromise: Promise<any> | null = null;
 
 async function getClient() {
     if (clientPromise) return clientPromise;
+
+    // Dynamic import for ESM compatibility in CommonJS project
+    const { create } = await import('@web3-storage/w3up-client');
 
     clientPromise = create();
     const client = await clientPromise;
@@ -22,7 +23,7 @@ async function getClient() {
             // If the token is a Space DID, we set it.
             // If it's a Delegation string, we would parse and add it.
             // Here we assume it helps identify the space.
-            const space = client.spaces().find(s => s.did() === process.env.IPFS_TOKEN);
+            const space = client.spaces().find((s: any) => s.did() === process.env.IPFS_TOKEN);
             if (space) {
                 await client.setCurrentSpace(space.did());
             } else {

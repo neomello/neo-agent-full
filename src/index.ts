@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { startServer } from './adapters/webhook-express';
 
 console.log("NΞØ Agent - System Initializing...");
