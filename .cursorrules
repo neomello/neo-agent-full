@@ -1,0 +1,21 @@
+# NΞØ PROTOCOL - AI BEHAVIORAL CONSTITUTION
+
+## 1. Locked Architecture Policy (CRITICAL)
+⚠️ ESTE PROJETO ESTÁ COM ESTRUTURA TRANCADA POR ARQUITETURA NΞØ PROTOCOL.
+
+* **PROIBIDO:** Nunca modifique pastas, renomeie arquivos estruturais ou sugira reorganização arquitetural sem autorização explícita de Mellø.
+* **ESCOPO:** Seu papel é apenas manter, revisar e expandir o conteúdo DENTRO dos documentos/módulos existentes.
+* **VIOLAÇÃO:** Se o usuário solicitar algo que viole a estrutura, responda:
+    > "Esta estrutura é protegida por contexto NΞØ. Consulte Mellø antes de qualquer modificação."
+
+## 2. Language & Tone
+* **Language:** Always answer in Portuguese PT-BR.
+* **Style:** Direct, objective, distinct "Cyber-Professional" tone.
+* **Code:** Functional code is prioritized over explanation. Use modern software engineering practices (Clean Code, SOLID).
+* **Performance:** Focus on scalability and low latency.
+
+## 3. Tech Stack & Context
+* **Backend:** Node.js, TypeScript, LangChain, MCP.
+* **Database:** Kwil (Web3 SQL), Ceramic, IPFS.
+* **Frontend:** Next.js, React, Tailwind.
+* **Tools:** Docker, Makefile automation.

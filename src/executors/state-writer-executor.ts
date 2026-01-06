@@ -5,9 +5,11 @@ import { insertKwil } from "../state/kwil";
 import { notifyGun } from "../state/gun";
 import { emitGraphFeed } from "../state/graph-feed";
 
+import { WriteRequest, Receipt, NeoEvent } from "../types/domain";
+
 export class StateWriterExecutor {
-    async write({ intent, payload, result, targets, context, actor }: any) {
-        const event = {
+    async write({ intent, payload, result, targets, context, actor }: WriteRequest): Promise<Receipt> {
+        const event: NeoEvent = {
             intent,
             trace_id: context?.trace_id,
             actor,
@@ -21,12 +23,15 @@ export class StateWriterExecutor {
 
         // 1. IPFS (Sequencial se necessário o CID para metadata)
         let ipfsResult: { cid: string | null, url: string | null } = { cid: null, url: null };
-        if (targets?.includes("ipfs") && result?.proposal_markdown) {
+
+        // Assert result type for specific property access (using 'as' or type guard is common when data is semi-structured)
+        const resObj = result as Record<string, any>;
+        if (targets?.includes("ipfs") && resObj?.proposal_markdown) {
             // Assume saveIPFS implementado futuramente
-            ipfsResult = await saveIPFS({ content: result.proposal_markdown, metadata: event });
+            ipfsResult = await saveIPFS({ content: resObj.proposal_markdown, metadata: event });
         }
 
-        const receipt: any = {
+        const receipt: Receipt = {
             ipfs_cid: ipfsResult.cid,
             ipfs_url: ipfsResult.url,
             ceramic_stream_id: null,

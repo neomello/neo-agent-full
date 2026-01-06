@@ -1,27 +1,31 @@
 
-# Environment Variables
-ENV_FILE=.env
+.PHONY: audit audit-state audit-tools audit-dashboard audit-core help
 
-# Commands
-.PHONY: build dev start install test deploy
+help:
+	@echo "🔍 NΞØ Agent Auditor"
+	@echo "-------------------"
+	@echo "make audit           - Roda auditoria completa"
+	@echo "make audit-state     - Audita drivers de banco de dados e storage"
+	@echo "make audit-tools     - Audita integrações e adaptadores"
+	@echo "make audit-core      - Audita o cérebro (LangChain) e roteador"
+	@echo "make audit-dashboard - Audita a aplicação Next.js"
 
-install:
-	npm install
+audit:
+	npx ts-node scripts/code-analysis.ts --scope=all
 
-build:
-	npm run build
+audit-state:
+	npx ts-node scripts/code-analysis.ts --scope=state
 
-dev:
-	npm run dev
+audit-tools:
+	npx ts-node scripts/code-analysis.ts --scope=tools
 
-start:
-	npm start
+audit-core:
+	npx ts-node scripts/code-analysis.ts --scope=core
 
-test:
-	@echo "Running local test simulating Webhook..."
-	curl -X POST http://localhost:3000/webhook \
-	-H "Content-Type: application/json" \
-	-d '{ "intent": "Analyze the state of the network", "context": { "local_test": true } }'
+audit-dashboard:
+	npx ts-node scripts/code-analysis.ts --scope=dashboard
 
-deploy:
-	git push heroku main
+save:
+	@./scripts/safe-push.sh
+
+sync: save

@@ -4,16 +4,19 @@ import { HumanMessage } from "@langchain/core/messages";
 import { hunterTool } from "./tools/hunter-tool";
 import { twitterTool } from "./tools/twitter-tool";
 
+import { AgentResult, AgentOneShotContext } from "../types/domain";
+import { StructuredTool } from "@langchain/core/tools";
+import { ReactAgent } from "langchain";
+
 export class LangChainAgentExecutor {
-    private agent: any; // LangGraph CompiledGraph
-    private tools: any[];
+    private agent: ReactAgent<any, any, any, any> | undefined;
+    private tools: StructuredTool[];
 
     constructor() {
         this.tools = [hunterTool, twitterTool];
         console.log("System: LangChain Executor v3 (LangGraph) initialized");
         this.initAgent();
     }
-
     private async initAgent() {
         const model = new ChatGoogleGenerativeAI({
             model: "gemini-1.5-flash",
@@ -29,7 +32,7 @@ export class LangChainAgentExecutor {
         });
     }
 
-    async execute(intent: string, context: any = {}) {
+    async execute(intent: string, context: AgentOneShotContext = {}): Promise<AgentResult> {
         // Ensure initialization
         if (!this.agent) await this.initAgent();
 
@@ -40,7 +43,7 @@ export class LangChainAgentExecutor {
 
         try {
             // Invoke the graph
-            const result = await this.agent.invoke({
+            const result = await this.agent!.invoke({
                 messages: [new HumanMessage(fullContent)],
             });
 
@@ -52,14 +55,15 @@ export class LangChainAgentExecutor {
                 payload: {},
                 response_text: lastMessage.content
             };
-        } catch (e: any) {
-            console.error("Agent Error:", e);
-            return { action: "error", payload: {}, response_text: e.message };
+        } catch (e) {
+            const err = e as Error;
+            console.error("Agent Error:", err);
+            return { action: "error", payload: {}, response_text: err.message };
         }
     }
 
     // Wrapper for compatibility
-    async handle(intent: string, payload: any, context: any) {
+    async handle(intent: string, payload: unknown, context: AgentOneShotContext) {
         return this.execute(intent, { ...context, payload });
     }
 }

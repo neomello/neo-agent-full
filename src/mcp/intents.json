@@ -1,1 +1,31 @@
-{}
+{
+    "qualify_lead": {
+        "description": "Analisa um lead com base em dados fornecidos e critérios de qualificação.",
+        "executor": "langchainAgent",
+        "writes_state": true,
+        "state_targets": [
+            "kwil",
+            "ceramic"
+        ],
+        "response_schema": "qualify_lead.schema.json"
+    },
+    "generate_proposal": {
+        "description": "Gera uma proposta comercial baseada em input do usuário.",
+        "executor": "langchainAgent",
+        "writes_state": true,
+        "state_targets": [
+            "ipfs",
+            "kwil",
+            "ceramic",
+            "gun"
+        ],
+        "response_schema": "generate_proposal.schema.json"
+    },
+    "ask_general": {
+        "description": "Perguntas gerais que não requerem persistência complexa.",
+        "executor": "langchainAgent",
+        "writes_state": false,
+        "state_targets": [],
+        "response_schema": null
+    }
+}

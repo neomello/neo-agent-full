@@ -17,7 +17,9 @@ const ProcessIntentParamsSchema = z.object({
     context: z.record(z.any()).optional().default({}),
 });
 
-export const router = async (request: any) => {
+import { JsonRpcRequest } from "../types/domain";
+
+export const router = async (request: unknown) => {
     // Validate general request structure
     const baseValidation = BaseRequestSchema.safeParse(request);
 
@@ -83,11 +85,12 @@ export const router = async (request: any) => {
             default:
                 throw new Error(`Method ${method} not supported`);
         }
-    } catch (error: any) {
-        console.error("[MCP Router] Error:", error);
+    } catch (error) {
+        const err = error as Error;
+        console.error("[MCP Router] Error:", err);
         return {
             status: "error",
-            message: error.message
+            message: err.message
         };
     }
 };
