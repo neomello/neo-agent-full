@@ -28,8 +28,9 @@ async function runTest() {
 
     try {
         const receipt = await writer.write({
-            intent: "log_event",
-            payload: { raw_input: "Just a test log" },
+            intent: "qualify_lead",
+            payload: { raw_input: "Qualify Alice from Neo Corp" },
+            result: testLead,
             targets: ["kwil"],
             context: { trace_id: traceId },
             actor: "tester"
@@ -49,8 +50,8 @@ async function runTest() {
 
         if (!dbId) throw new Error("KWIL_DB_ID missing");
 
-        // Wait a bit for block finality (local is fast but safer to wait 1s)
-        await new Promise(r => setTimeout(r, 1000));
+        // Wait a bit for block finality (local node might take a few seconds)
+        await new Promise(r => setTimeout(r, 5000));
 
         const query = `SELECT * FROM leads WHERE email = '${testLead.email}'`;
         const res = await kwil.selectQuery(dbId, query);

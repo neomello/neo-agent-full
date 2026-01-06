@@ -46,6 +46,8 @@ export async function insertKwil({ event }: { event: NeoEvent, receipt_hint?: Re
         let actionName = "add_event";
         let inputs: any[] = [];
 
+        const { Utils } = require('@kwilteam/kwil-js');
+
         // ROUTING LOGIC based on Intent
         if (event.intent === "qualify_lead" && event.result) {
             const leadData = event.result as any;
@@ -53,40 +55,40 @@ export async function insertKwil({ event }: { event: NeoEvent, receipt_hint?: Re
             // Basic validation to ensure it looks like a lead
             if (leadData.email) {
                 actionName = "create_lead";
-                // Map fields to create_lead action
-                inputs = [{
-                    "$id": event.trace_id || crypto.randomUUID(),
-                    "$email": leadData.email,
-                    "$name": leadData.name || "Unknown",
-                    "$company": leadData.company || "Unknown",
-                    "$score": typeof leadData.score === 'number' ? leadData.score : 0,
-                    "$lead_status": leadData.status || "new",
-                    "$lead_source": "neo_agent_core",
-                    "$created_at": new Date().toISOString()
-                }];
+                const input = new Utils.ActionInput();
+                input.put("$id", event.trace_id || crypto.randomUUID());
+                input.put("$email", leadData.email);
+                input.put("$name", leadData.name || "Unknown");
+                input.put("$company", leadData.company || "Unknown");
+                input.put("$score", typeof leadData.score === 'number' ? leadData.score : 0);
+                input.put("$lead_status", leadData.status || "new");
+                input.put("$lead_source", "neo_agent_core");
+                input.put("$created_at", new Date().toISOString());
+                inputs = [input];
             }
         }
 
         // Fallback or Generic Event Logging
         if (actionName === "add_event") {
-            inputs = [{
-                "$id": crypto.randomUUID(), // Unique ID for the event record
-                "$trace_id": event.trace_id || "no_trace",
-                "$intent": event.intent || "unknown",
-                "$actor_did": "did:key:z6M...",
-                "$payload": JSON.stringify(event.payload || {}),
-                "$exec_result": JSON.stringify(event.result || {}),
-                "$event_ts": event.timestamp || new Date().toISOString()
-            }];
+            const input = new Utils.ActionInput();
+            input.put("$id", crypto.randomUUID());
+            input.put("$trace_id", event.trace_id || "no_trace");
+            input.put("$intent", event.intent || "unknown");
+            input.put("$actor_did", "did:key:z6M...");
+            input.put("$payload", JSON.stringify(event.payload || {}));
+            input.put("$exec_result", JSON.stringify(event.result || {}));
+            input.put("$event_ts", event.timestamp || new Date().toISOString());
+            inputs = [input];
         }
 
         console.log(`[KWIL] Executing action: ${actionName} for intent: ${event.intent}`);
 
         // Execute Action
         const res = await kwil.execute({
-            namespace: dbId,
-            name: actionName,
+            dbid: dbId,
+            action: actionName,
             inputs: inputs,
+            description: ""
         }, signer);
 
         const txHash = res.data?.tx_hash;
