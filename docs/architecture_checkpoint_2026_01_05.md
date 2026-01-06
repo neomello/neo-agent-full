@@ -22,7 +22,7 @@ A estrutura modular foi verificada e validada. Todos os adaptadores de estado es
 O executor do agente (`src/executors/langchain-agent-executor.ts`) foi modernizado com sucesso.
 
 *   **Engine**: Atualizado para `LangGraph` (`createReactAgent`), garantindo maior estabilidade em loops de raciocínio.
-*   **Modelo**: Configurado para `gemini-1.5-flash` (`@langchain/google-genai`), resolvendo conflitos de versão e erros de "author undefined".
+*   **Modelo**: Configurado para `gemini-1.5-flash-001` (`@langchain/google-genai`), resolvendo conflitos de versão e erros de "author undefined".
 *   **Tools**: As ferramentas `hunterTool` e `twitterTool` estão corretamente injetadas.
 *   **Integração**: O método `execute` retorna o formato padronizado para o Router MCP.
 
