@@ -4,28 +4,35 @@
 
 An advanced autonomous AI agent with persistent memory, external tool integration via MCP (Model Context Protocol), and multi-layer state management.
 
----
-
-## 🚀 Features
-
-- **🧠 LangChain + LangGraph**: ReAct agent with tool calling
-- **🔍 MCP Integration**: 33+ external tools (Brave Search, GitHub, Fetch)
-- **💾 Persistent Memory**: Kwil Database for lead management
-- **📧 Email Verification**: Hunter.io integration
-- **🐦 Social Media**: Twitter/X API integration
-- **🌐 Decentralized State**: Ceramic, GUN, IPFS support
-- **📊 Structured Responses**: JSON-based agent outputs
+[![Sponsor neomello](https://img.shields.io/badge/Sponsor-neomello-ff008e?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/neomello)
 
 ---
 
-## 📦 Quick Start
+## Why this exists
 
-### Prerequisites
-- Node.js 20+
-- Docker (for Kwil and MCP servers)
-- Google AI API Key
+Most AI agents are stateless, ephemeral and forget everything when they restart.
 
-### Installation
+**NΞØ Agent** exists to enforce one idea:
+**your agent must remember, reason with external data, and persist its knowledge**.
+
+If the process dies, memory does not.
+
+---
+
+## What you get
+
+* **Persistent Memory**: Kwil SQL database for lead management and state
+* **External Intelligence**: 33+ tools via MCP (Brave Search, GitHub, Fetch)
+* **Autonomous Reasoning**: LangGraph ReAct agent with tool calling
+* **Multi-Layer State**: Ceramic, GUN, IPFS support for decentralized persistence
+* **Production Ready**: Webhook API, structured JSON responses, error recovery
+
+This repository does not document the agent.
+It **runs** it.
+
+---
+
+## Quick Start
 
 ```bash
 # Clone the repository
@@ -49,9 +56,12 @@ npx ts-node scripts/deploy-kwil.ts
 npm run dev
 ```
 
+Secrets are externalized by design.
+See [`.env.example`](.env.example) for required configuration.
+
 ---
 
-## 🔧 Configuration
+## Configuration
 
 ### Required Environment Variables
 
@@ -71,11 +81,11 @@ GITHUB_TOKEN=your_github_token
 HUNTER_API_KEY=your_hunter_key
 ```
 
-See [`.env.example`](.env.example) for full configuration.
+New machine. Same memory.
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # E2E test for Kwil integration
@@ -95,20 +105,20 @@ curl -X POST http://localhost:3000/webhook \
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 - [Checkpoint 9: MCP Integration](docs/checkpoint_9_mcp_integration.md)
 - [Architecture Overview](docs/architecture_checkpoint_2026_01_05.md)
 
 ---
 
-## 🎨 Related Repositories
+## Related Repositories
 
 - **Dashboard**: [neo-agent-dashboard](https://github.com/neomello/neo-agent-dashboard) - Next.js frontend for monitoring and control
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -143,7 +153,7 @@ curl -X POST http://localhost:3000/webhook \
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Runtime**: Node.js 20, TypeScript
 - **AI/ML**: LangChain, LangGraph, Google Gemini
@@ -154,16 +164,52 @@ curl -X POST http://localhost:3000/webhook \
 
 ---
 
-## 📝 License
+## Why sponsor this
 
-MIT
+This work is public, but it is not free.
+
+Sponsoring means supporting:
+
+* Autonomous agents with persistent memory
+* Decentralized state management patterns
+* Infrastructure that outlives processes
+
+You are not sponsoring a person.
+You are sponsoring a **protocol**.
+
+If this agent saved you time, prevented data loss, or clarified your AI workflow, sponsorship is simply returning value to the system.
+
+[![Sponsor neomello](https://img.shields.io/badge/Sponsor-neomello-ff008e?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/neomello)
 
 ---
 
-## 🤝 Contributing
+## Repository
 
-Contributions are welcome! Please open an issue or submit a pull request.
+[https://github.com/neomello/neo-agent-full](https://github.com/neomello/neo-agent-full)
 
 ---
 
-**Built with ❤️ by the NΞØ Team**
+## Contact
+
+[neo@neoprotocol.space](mailto:neo@neoprotocol.space)
+
+<div align="center">
+  <a href="https://x.com/node_mello">
+    <img src="https://img.shields.io/badge/-@node_mello-ff008e?style=flat-square&logo=twitter&logoColor=white" alt="Twitter @node_mello" />
+  </a>
+  <a href="https://www.instagram.com/neoprotocol.eth/">
+    <img src="https://img.shields.io/badge/-@neoprotocol.eth-ff008e?style=flat-square&logo=instagram&logoColor=white" alt="Instagram @neoprotocol.eth" />
+  </a>
+  <a href="https://etherscan.io/">
+    <img src="https://img.shields.io/badge/-neomello.eth-ff008e?style=flat-square&logo=ethereum&logoColor=white" alt="Ethereum neomello.eth" />
+  </a>
+</div>
+
+<div align="center">
+  <i>"Expand until silence becomes structure."</i>
+</div>
+
+---
+
+> This agent evolves.
+> Forgetfulness does not.
