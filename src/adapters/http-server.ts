@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 // Webhook Endpoint for Make/n8n
 app.post('/webhook', async (req, res) => {
     try {
-        const { intent, context } = req.body;
+        const { intent, context, ...rest } = req.body;
 
         if (!intent) {
             res.status(400).json({ error: "Missing 'intent' field" });
@@ -22,12 +22,12 @@ app.post('/webhook', async (req, res) => {
         console.log(`[Webhook] Received Intent: ${intent}`);
 
         // Route the event through MCP Router
-        // We map the HTTP request to the 'process_intent' method expected by the router
+        // Merging context and any other top-level fields into params.context
         const response = await router({
             method: "process_intent",
             params: {
                 intent,
-                context: context || {}
+                context: { ...(context || {}), ...rest }
             }
         });
 

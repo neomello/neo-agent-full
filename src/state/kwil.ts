@@ -48,24 +48,22 @@ export async function insertKwil({ event }: { event: NeoEvent, receipt_hint?: Re
 
         const { Utils } = require('@kwilteam/kwil-js');
 
-        // ROUTING LOGIC based on Intent
-        if (event.intent === "qualify_lead" && event.result) {
-            const leadData = event.result as any;
+        // ROUTING LOGIC based on Intent or Payload
+        const agentResult = event.result as any;
+        const leadData = agentResult?.payload || agentResult;
 
-            // Basic validation to ensure it looks like a lead
-            if (leadData.email) {
-                actionName = "create_lead";
-                const input = new Utils.ActionInput();
-                input.put("$id", event.trace_id || crypto.randomUUID());
-                input.put("$email", leadData.email);
-                input.put("$name", leadData.name || "Unknown");
-                input.put("$company", leadData.company || "Unknown");
-                input.put("$score", typeof leadData.score === 'number' ? leadData.score : 0);
-                input.put("$lead_status", leadData.status || "new");
-                input.put("$lead_source", "neo_agent_core");
-                input.put("$created_at", new Date().toISOString());
-                inputs = [input];
-            }
+        if (leadData && leadData.email && (event.intent === "qualify_lead" || event.intent === "general_agent" || event.intent === "ask_general")) {
+            actionName = "create_lead";
+            const input = new Utils.ActionInput();
+            input.put("$id", event.trace_id || crypto.randomUUID());
+            input.put("$email", leadData.email);
+            input.put("$name", leadData.name || leadData.full_name || "Unknown");
+            input.put("$company", leadData.company || leadData.organization || "Unknown");
+            input.put("$score", Number(leadData.score || leadData.lead_score || leadData.quantity || 0));
+            input.put("$lead_status", leadData.status || "qualified");
+            input.put("$lead_source", leadData.source || "neo_agent_core");
+            input.put("$created_at", new Date().toISOString());
+            inputs = [input];
         }
 
         // Fallback or Generic Event Logging
@@ -110,4 +108,16 @@ export async function insertKwil({ event }: { event: NeoEvent, receipt_hint?: Re
         };
     }
 }
+export async function executeSelect(query: string) {
+    const { kwil } = getKwil();
+    const dbId = process.env.KWIL_DB_ID;
+    if (!dbId) throw new Error("KWIL_DB_ID is not set.");
 
+    try {
+        const res = await kwil.selectQuery(dbId, query);
+        return res.data;
+    } catch (error) {
+        console.error("[KWIL] Select Error:", error);
+        throw error;
+    }
+}
