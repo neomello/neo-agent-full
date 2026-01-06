@@ -8,3 +8,4 @@ kwil-nodes/
 !package.json
 !package-lock.json
 !tsconfig.json
+dashboard/
