@@ -1,3 +1,42 @@
-version: '3.8'
 services:
-  # Services will be added here
+  kwil:
+    image: kwildb/kwil:v0.6.1
+    container_name: neo_kwil_node
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    depends_on:
+      - postgres
+    environment:
+      - KWILD_ROOT_DIR=/root/.kwil
+      - KWILD_DB_HOST=postgres
+      - KWILD_DB_PORT=5432
+      - KWILD_DB_USER=kwil
+      - KWILD_DB_PASSWORD=kwilpassword
+      - KWILD_DB_NAME=kwil_db
+      # - KWILD_APP_RUN_TESTMODE=true
+
+      # Força escuta em 0.0.0.0 para acesso externo
+      # v0.6.1 requires no "start" param, just flags
+    command: [ "--autogen", "--app.http-listen-addr=0.0.0.0:8080", "--app.grpc-listen-addr=0.0.0.0:50051", "--app.admin-listen-addr=/tmp/kwil_admin.sock" ]
+
+    volumes:
+      # MAPEAMENTO LOCAL: Os arquivos aparecerão na sua pasta de projeto!
+      - ./kwil-nodes/config:/root/.kwild
+
+  postgres:
+    image: postgres:16.1
+    container_name: neo_kwil_postgres
+    environment:
+      - POSTGRES_USER=kwil
+      - POSTGRES_PASSWORD=kwilpassword
+      - POSTGRES_DB=kwil_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./kwil-nodes/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U kwil" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
