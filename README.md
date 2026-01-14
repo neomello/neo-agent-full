@@ -16,7 +16,7 @@
 
 ---
 
-## 🔮 The Manifesto
+## Manifest
 
 **Most AI agents are ghosts.** They appear, speak, and vanish when the terminal closes. They have no past, no identity, and no voice beyond the session.
 
