@@ -12,6 +12,7 @@ Nodes que estão ativos e operacionais:
 - State Reader/Writer
 - Kwil Database (v0.9+ Operacional)
 - Ceramic Network (DID Streams v2.5 Operacional)
+- GUN DB (Real-time P2P Synapse v2.5 Operacional)
 - MCP Tools (Brave, Fetch, GitHub)
 - Docker containers
 - Kwil Node + PostgreSQL
@@ -22,7 +23,6 @@ Nodes que estão configurados mas com issues:
 
 ### 🔴 Vermelho - Não Conectado (❌)
 Nodes com código pronto mas não testados/conectados:
-- **GUN DB**: P2P sync implementation
 - **IPFS**: Web3.Storage implementation
 - **LangSmith**: Tracing desabilitado (LANGCHAIN_TRACING_V2=false)
 - **Prometheus**: Monitoring não configurado
@@ -67,15 +67,15 @@ LANGCHAIN_TRACING_V2=true
 ## 📈 Estatísticas
 
 **Total de Nodes**: 21
-- ✅ **Conectados**: 17 (81%)
+- ✅ **Conectados**: 18 (85%)
 - ⚠️ **Com Problemas**: 1 (5%)
-- ❌ **Não Conectados**: 3 (14%)
+- ❌ **Não Conectados**: 2 (10%)
 
 **Por Camada**:
 - Frontend: 1/1 (100%)
 - API Gateway: 2/2 (100%)
 - Agent Core: 6/7 (86%) - Twitter com problema
-- State Layer: 4/6 (66%) - GUN, IPFS pendentes
+- State Layer: 5/6 (83%) - IPFS pendente
 - Infrastructure: 6/6 (100%)
 - Monitoring: 0/2 (0%)
 
