@@ -38,9 +38,10 @@ export const twitterTool = new DynamicStructuredTool({
                 text: result.data.text
             });
 
-        } catch (error: any) {
-            console.error("[Twitter Tool] Error:", error);
-            return `Error posting to Twitter: ${error.message}`;
+        } catch (error) {
+            const err = error as Error;
+            console.error("[Twitter Tool] Error:", err.message);
+            return `Error posting to Twitter: ${err.message}`;
         }
     },
 });

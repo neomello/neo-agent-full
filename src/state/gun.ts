@@ -1,4 +1,5 @@
 import Gun from 'gun';
+import { DynamicData } from '../types/domain';
 
 // Initialize Gun with peers from env
 // Note: In a real server context, we might want to also act as a peer server ('http' passed to Gun).
@@ -10,7 +11,7 @@ const gun = Gun({
     // radisk: true         // Optional: persistence
 });
 
-export async function notifyGun({ event, receipt_hint }: { event: any, receipt_hint: any }) {
+export async function notifyGun({ event, receipt_hint }: { event: DynamicData, receipt_hint: DynamicData }) {
     return new Promise<{ ok: boolean }>((resolve) => {
         try {
             if (!process.env.GUN_PEER) {
@@ -29,7 +30,7 @@ export async function notifyGun({ event, receipt_hint }: { event: any, receipt_h
                 timestamp: event.timestamp || Date.now()
             };
 
-            node.set(dataToPut, (ack: any) => {
+            node.set(dataToPut, (ack: DynamicData) => {
                 if (ack.err) {
                     console.error("[GUN] Put error:", ack.err);
                     resolve({ ok: false });
@@ -40,7 +41,8 @@ export async function notifyGun({ event, receipt_hint }: { event: any, receipt_h
             });
 
         } catch (error) {
-            console.error("[GUN] Unexpected error:", error);
+            const err = error as Error;
+            console.error("[GUN] Unexpected error:", err.message);
             resolve({ ok: false });
         }
     });

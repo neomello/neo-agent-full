@@ -74,11 +74,11 @@ Este documento centraliza o progresso do desenvolvimento e detalha os próximos 
   <!-- Ceramic -->
   <div style="margin-bottom: 20px;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-      <span style="font-weight: bold; color: #ff008e;">DID Streams (Ceramic)</span>
-      <span style="color: #ff008e;">10%</span>
+      <span style="font-weight: bold; color: #00f2fe;">DID Streams (Ceramic)</span>
+      <span style="color: #00f2fe;">100%</span>
     </div>
     <div style="width: 100%; background: #1a1a1a; border-radius: 10px; height: 8px; border: 1px solid #333;">
-      <div style="width: 10%; background: linear-gradient(90deg, #ff008e 0%, #ff8ec7 100%); height: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(255, 0, 142, 0.5);"></div>
+      <div style="width: 100%; background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); height: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);"></div>
     </div>
   </div>
 

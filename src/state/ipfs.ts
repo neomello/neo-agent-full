@@ -1,5 +1,7 @@
+import { DynamicData } from "../types/domain";
+
 // Singleton client promise
-let clientPromise: Promise<any> | null = null;
+let clientPromise: Promise<DynamicData> | null = null;
 
 async function getClient() {
     if (clientPromise) return clientPromise;
@@ -23,21 +25,22 @@ async function getClient() {
             // If the token is a Space DID, we set it.
             // If it's a Delegation string, we would parse and add it.
             // Here we assume it helps identify the space.
-            const space = client.spaces().find((s: any) => s.did() === process.env.IPFS_TOKEN);
+            const space = client.spaces().find((s: DynamicData) => s.did() === process.env.IPFS_TOKEN);
             if (space) {
                 await client.setCurrentSpace(space.did());
             } else {
                 console.warn("[IPFS] IPFS_TOKEN provided but space not found in local store. Ensure you have delegated capabilities to this agent.");
             }
-        } catch (err) {
-            console.error("[IPFS] Failed to configure space from IPFS_TOKEN:", err);
+        } catch (error) {
+            const err = error as Error;
+            console.error("[IPFS] Failed to configure space from IPFS_TOKEN:", err.message);
         }
     }
 
     return client;
 }
 
-export async function saveIPFS({ content, metadata }: { content: string, metadata: any }) {
+export async function saveIPFS({ content, metadata }: { content: string, metadata: DynamicData }) {
     try {
         const client = await getClient();
 
@@ -59,7 +62,8 @@ export async function saveIPFS({ content, metadata }: { content: string, metadat
 
         return { cid: cidString, url };
     } catch (error) {
-        console.error("[IPFS] Save failed:", error);
+        const err = error as Error;
+        console.error("[IPFS] Save failed:", err.message);
         // Return nulls to allow fallback/resilience in executor
         return { cid: null, url: null };
     }
