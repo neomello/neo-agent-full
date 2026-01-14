@@ -10,38 +10,45 @@ async function getIPFSClient() {
     if (client) return client;
 
     try {
-        // Dynamic imports para compatibilidade ESM
         const { create } = await import('@web3-storage/w3up-client');
         const { extract } = await import('@ucanto/core/delegation');
 
         client = await create();
 
-        const token = process.env.IPFS_TOKEN;
+        const token = process.env.IPFS_TOKEN?.trim();
         if (!token) {
             console.warn("[IPFS] ⚠️  IPFS_TOKEN não encontrado no ambiente.");
             return client;
         }
 
         try {
-            // Decodifica a prova base64 e extrai a delegação
-            // Buffer.from é seguro em Node.js para converter base64 em bytes
-            const bytes = Uint8Array.from(Buffer.from(token, 'base64'));
+            // Sanitização Total NΞØ: Remove aspas e espaços invisíveis
+            const cleanToken = token.replace(/^["']|["']$/g, '');
+
+            // Decodifica a prova base64
+            const bytes = Uint8Array.from(Buffer.from(cleanToken, 'base64'));
+
+            console.log(`[IPFS] 🛠️  Processing token (${bytes.length} bytes)...`);
+
+            // Tenta extrair a delegação (formato CAR)
             const proof = await extract(bytes);
 
             if (proof.ok) {
                 // Adiciona a prova ao cliente
                 await client.addSpace(proof.ok);
 
-                // Se o proof tiver capacidades, seleciona o primeiro espaço
+                // Seleciona o espaço da delegação
                 const spaceDid = proof.ok.capabilities[0].with;
                 await client.setCurrentSpace(spaceDid);
 
                 console.log(`[IPFS] 🟢 Storacha Authenticated. Space: ${spaceDid}`);
             } else {
-                console.error("[IPFS] 🔴 Falha ao extrair prova (Delegação inválida).");
+                console.error("[IPFS] 🔴 Erro na prova (extract failed):", proof.error);
+                console.log("[IPFS] 🛠️ Header bytes:", bytes.slice(0, 10));
+                console.log("[IPFS] 🛠️ Certifique-se que o IPFS_TOKEN no .env é o Base64 DIRETO do comando 'storacha delegation create'");
             }
         } catch (err: any) {
-            console.error("[IPFS] 🔴 Erro ao processar IPFS_TOKEN:", err.message);
+            console.error("[IPFS] 🔴 Falha crítica ao processar IPFS_TOKEN:", err.message);
         }
 
     } catch (error: any) {

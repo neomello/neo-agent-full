@@ -27,8 +27,14 @@ export const broadcastLead = async (lead: DynamicData) => {
             lead.id = lead.email || Date.now().toString();
         }
 
+        // Sanitização NΞØ: GUN não aceita arrays puros em nodes .put()
+        const sanitizedLead = JSON.parse(JSON.stringify(lead));
+        if (sanitizedLead.tags && Array.isArray(sanitizedLead.tags)) {
+            sanitizedLead.tags = sanitizedLead.tags.join(', ');
+        }
+
         const payload = {
-            ...lead,
+            ...sanitizedLead,
             _synced_at: Date.now(), // Timestamp da sinapse
             _source: 'neo-agent-core'
         };

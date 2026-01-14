@@ -9,3 +9,4 @@ kwil-nodes/
 !package-lock.json
 !tsconfig.json
 dashboard/
+radata/

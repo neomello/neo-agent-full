@@ -1,51 +1,64 @@
-import { Utils, WebKwil, KwilSigner } from '@kwilteam/kwil-js';
+
+import { WebKwil, KwilSigner } from '@kwilteam/kwil-js';
 import { Wallet } from 'ethers';
-import { schema } from '../src/state/schema';
+import { NEO_SCHEMA } from '../src/state/schema';
 import * as dotenv from 'dotenv';
+import * as crypto from 'crypto';
+
 dotenv.config();
 
-async function deployKwilSchema() {
-    console.log("🚀 Starting Kwil Database Deployment (SDK v0.6.3)...");
+// Helper local para evitar dependência circular
+const KwilUtils = {
+    generateDbId: (owner: string, name: string) => {
+        const ownerClean = owner.toLowerCase().replace('0x', '');
+        return `x${crypto.createHash('sha256').update(ownerClean + name).digest('hex').substring(0, 50)}`;
+    }
+};
 
-    const provider = process.env.KWIL_PROVIDER;
+async function deployKwil() {
+    const provider = process.env.KWIL_PROVIDER || 'http://localhost:8081';
     const privateKey = process.env.KWIL_PRIVATE_KEY;
-    const chainId = process.env.KWIL_CHAIN_ID || "kwil-chain-1";
 
-    if (!provider || !privateKey) {
-        console.error("❌ Error: KWIL_PROVIDER or KWIL_PRIVATE_KEY missing in .env");
-        process.exit(1);
+    if (!privateKey) {
+        console.error("❌ ERRO: Faltam KWIL_PRIVATE_KEY no .env");
+        return;
     }
 
+    console.log("🚀 Iniciando Deploy do Banco NΞØ no Kwil...");
+    console.log(`📡 Provider: ${provider}`);
+
+    const kwil = new WebKwil({
+        kwilProvider: provider,
+        chainId: process.env.KWIL_CHAIN_ID || "kwil-chain-1"
+    });
+
+    const wallet = new Wallet(privateKey);
+    const signer = new KwilSigner(wallet, wallet.address);
+
     try {
-        const kwil = new WebKwil({ kwilProvider: provider, chainId: chainId });
-        const wallet = new Wallet(privateKey);
-        const signer = new KwilSigner(wallet, wallet.address);
+        console.log("📦 Enviando Database Schema...");
 
-        console.log(`📡 Connected as: ${wallet.address}`);
-        console.log("💾 Deploying Schema...");
-
-        // Set owner
-        schema.owner = wallet.address;
-
-        const res = await kwil.deploy({
-            // @ts-ignore
-            schema: schema,
-            description: "State Layer DB for Neo Agent"
+        const tx = await kwil.deploy({
+            schema: NEO_SCHEMA as any,
+            description: "NΞØ Agent State Layer"
         }, signer);
 
-        const txHash = res.data?.tx_hash;
-        console.log(`✅ Transaction Broadcasted! Hash: ${txHash}`);
+        console.log("✅ Database Deploy bem sucedido!");
+        console.log(`🔗 Transaction Hash: ${tx.data?.tx_hash}`);
 
-        const dbid = Utils.generateDBID(wallet.address, "neo_agent_db");
-        console.log("\n" + "=".repeat(60));
-        console.log(`✅ DATABASE DEPLOYED! ADICIONE ISTO AO SEU .ENV:`);
-        console.log(`\nKWIL_DB_ID=${dbid}\n`);
-        console.log("=".repeat(60) + "\n");
+        const dbId = KwilUtils.generateDbId(wallet.address, "neo_agent_db");
+        console.log(`\n🔑 ATENÇÃO: Atualize seu .env com:`);
+        console.log(`KWIL_DB_ID=${dbId}`);
 
     } catch (error: any) {
-        console.error("❌ Deploy Failed:", error.message || error);
-        process.exit(1);
+        console.error("❌ Erro no Deploy:", error.message || error);
+
+        if (error.message?.includes("already exists")) {
+            const dbId = KwilUtils.generateDbId(wallet.address, "neo_agent_db");
+            console.log("💡 O banco já existe.");
+            console.log(`KWIL_DB_ID=${dbId}`);
+        }
     }
 }
 
-deployKwilSchema();
+deployKwil();
