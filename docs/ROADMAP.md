@@ -93,14 +93,14 @@ Este documento centraliza o progresso do desenvolvimento e detalha os próximos 
     </div>
   </div>
 
-  <!-- IPFS -->
+  <!-- IPFS Snapshots -->
   <div style="margin-bottom: 20px;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-      <span style="font-weight: bold; color: #666;">IPFS Snapshots</span>
-      <span style="color: #666;">0%</span>
+      <span style="font-weight: bold; color: #00f2fe;">IPFS Snapshots</span>
+      <span style="color: #00f2fe;">100%</span>
     </div>
     <div style="width: 100%; background: #1a1a1a; border-radius: 10px; height: 8px; border: 1px solid #333;">
-      <div style="width: 0%; background: #444; height: 100%; border-radius: 10px;"></div>
+      <div style="width: 100%; background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); height: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);"></div>
     </div>
   </div>
 

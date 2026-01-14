@@ -1,71 +1,101 @@
 import { DynamicData } from "../types/domain";
 
-// Singleton client promise
-let clientPromise: Promise<DynamicData> | null = null;
+// NΞØ Protocol - Storacha (IPFS) Logic
+let client: any = null;
 
-async function getClient() {
-    if (clientPromise) return clientPromise;
+/**
+ * Inicializa o cliente w3up-client (Storacha) usando a Delegation Proof do .env
+ */
+async function getIPFSClient() {
+    if (client) return client;
 
-    // Dynamic import for ESM compatibility in CommonJS project
-    const { create } = await import('@web3-storage/w3up-client');
+    try {
+        // Dynamic imports para compatibilidade ESM
+        const { create } = await import('@web3-storage/w3up-client');
+        const { extract } = await import('@ucanto/core/delegation');
 
-    clientPromise = create();
-    const client = await clientPromise;
+        client = await create();
 
-    // In w3up, authorization typically persists in the local store.
-    // However, if IPFS_TOKEN is provided (assuming it acts as a Space DID or valid proof),
-    // we would integrate it here. 
-    // For State Layer v2.5 with w3up, we assume the agent environment 
-    // is authenticated via `w3 login` or has a valid delegation.
-
-    // Minimal logic to attempt using the Space from env if set (as a DID)
-    // or relying on local store.
-    if (process.env.IPFS_TOKEN) {
-        try {
-            // If the token is a Space DID, we set it.
-            // If it's a Delegation string, we would parse and add it.
-            // Here we assume it helps identify the space.
-            const space = client.spaces().find((s: DynamicData) => s.did() === process.env.IPFS_TOKEN);
-            if (space) {
-                await client.setCurrentSpace(space.did());
-            } else {
-                console.warn("[IPFS] IPFS_TOKEN provided but space not found in local store. Ensure you have delegated capabilities to this agent.");
-            }
-        } catch (error) {
-            const err = error as Error;
-            console.error("[IPFS] Failed to configure space from IPFS_TOKEN:", err.message);
+        const token = process.env.IPFS_TOKEN;
+        if (!token) {
+            console.warn("[IPFS] ⚠️  IPFS_TOKEN não encontrado no ambiente.");
+            return client;
         }
+
+        try {
+            // Decodifica a prova base64 e extrai a delegação
+            // Buffer.from é seguro em Node.js para converter base64 em bytes
+            const bytes = Uint8Array.from(Buffer.from(token, 'base64'));
+            const proof = await extract(bytes);
+
+            if (proof.ok) {
+                // Adiciona a prova ao cliente
+                await client.addSpace(proof.ok);
+
+                // Se o proof tiver capacidades, seleciona o primeiro espaço
+                const spaceDid = proof.ok.capabilities[0].with;
+                await client.setCurrentSpace(spaceDid);
+
+                console.log(`[IPFS] 🟢 Storacha Authenticated. Space: ${spaceDid}`);
+            } else {
+                console.error("[IPFS] 🔴 Falha ao extrair prova (Delegação inválida).");
+            }
+        } catch (err: any) {
+            console.error("[IPFS] 🔴 Erro ao processar IPFS_TOKEN:", err.message);
+        }
+
+    } catch (error: any) {
+        console.error("[IPFS] ❌ Falha ao inicializar w3up-client:", error.message);
     }
 
     return client;
 }
 
-export async function saveIPFS({ content, metadata }: { content: string, metadata: DynamicData }) {
+/**
+ * ⚡ Upload Snapshot
+ * Converte um objeto JSON em um arquivo imutável no IPFS via Storacha.
+ */
+export async function uploadSnapshot(data: object): Promise<string | null> {
     try {
-        const client = await getClient();
+        const ipfsClient = await getIPFSClient();
+        if (!ipfsClient) return null;
 
-        // Create a File-like object from the content
-        // Node.js environments with w3up-client support generic File/Blob
-        const file = new File([content], `proposal-${Date.now()}.md`, { type: 'text/markdown' });
+        // Criar Blob do JSON (Global no Node 20)
+        const content = JSON.stringify(data, null, 2);
+        const file = new File([content], `neo-snapshot-${Date.now()}.json`, { type: 'application/json' });
 
-        // Upload
-        // w3up uploadFile returns the Data CID (the file's own CID) if linked correctly, 
-        // or we upload a directory wrapping it. 
-        // client.uploadFile is a helper that returns a CID.
-        const cid = await client.uploadFile(file);
+        console.log("[IPFS] 🚀 Fazendo upload de snapshots para Storacha...");
+        const cid = await ipfsClient.uploadFile(file);
+
         const cidString = cid.toString();
+        console.log(`[IPFS] ✅ Snapshot persistido! CID: ${cidString}`);
 
-        // Construct URL (using w3s.link gateway for convenience)
-        const url = `https://${cidString}.ipfs.w3s.link`;
-
-        console.log(`[IPFS] Saved: ${cidString}`);
-
-        return { cid: cidString, url };
-    } catch (error) {
-        const err = error as Error;
-        console.error("[IPFS] Save failed:", err.message);
-        // Return nulls to allow fallback/resilience in executor
-        return { cid: null, url: null };
+        return cidString;
+    } catch (error: any) {
+        console.error("[IPFS] ❌ Falha no upload do snapshot:", error.message);
+        return null;
     }
 }
 
+/**
+ * Legacy/Wrapper support for StateWriterExecutor
+ */
+export async function saveIPFS({ content, metadata }: { content: string, metadata: DynamicData }) {
+    try {
+        const ipfsClient = await getIPFSClient();
+        if (!ipfsClient) return { cid: null, url: null };
+
+        // metadata ignorado no upload direto de arquivo único, mas preservado para compatibilidade
+        const file = new File([content], `neo-content-${Date.now()}.md`, { type: 'text/markdown' });
+        const cid = await ipfsClient.uploadFile(file);
+        const cidString = cid.toString();
+
+        return {
+            cid: cidString,
+            url: `https://${cidString}.ipfs.w3s.link`
+        };
+    } catch (error: any) {
+        console.error("[IPFS] ❌ Save failed:", error.message);
+        return { cid: null, url: null };
+    }
+}
