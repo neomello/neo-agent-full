@@ -45,16 +45,77 @@ Este documento centraliza o progresso do desenvolvimento e detalha os próximos 
 
 ---
 
-## 📈 Tabela de Progresso
+## 📈 Progresso do Protocolo
 
-| Camada | Funcionalidade | Status | Prioridade |
-| :--- | :--- | :--- | :--- |
-| **State** | SQL Persistence (Kwil) | ✅ 100% | - |
-| **State** | DID Streams (Ceramic) | 🔴 10% | 🔥 Alta |
-| **State** | P2P Sync (GUN) | 🔴 5% | 🟡 Média |
-| **Tools** | MCP Web/GitHub | ✅ 100% | - |
-| **Infra** | IPFS Snapshots | 🔴 0% | 🔵 Baixa |
-| **Audit** | Prompt Tracing | 🔴 0% | 🟡 Média |
+<div style="width: 100%; max-width: 600px; margin: 20px 0; font-family: sans-serif;">
+
+  <!-- Kwil / State -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+      <span style="font-weight: bold; color: #00f2fe;">SQL Persistence (Kwil)</span>
+      <span style="color: #00f2fe;">100%</span>
+    </div>
+    <div style="width: 100%; background: #1a1a1a; border-radius: 10px; height: 8px; border: 1px solid #333;">
+      <div style="width: 100%; background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); height: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);"></div>
+    </div>
+  </div>
+
+  <!-- MCP Tools -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+      <span style="font-weight: bold; color: #00f2fe;">MCP Web/GitHub Tools</span>
+      <span style="color: #00f2fe;">100%</span>
+    </div>
+    <div style="width: 100%; background: #1a1a1a; border-radius: 10px; height: 8px; border: 1px solid #333;">
+      <div style="width: 100%; background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); height: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);"></div>
+    </div>
+  </div>
+
+  <!-- Ceramic -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+      <span style="font-weight: bold; color: #ff008e;">DID Streams (Ceramic)</span>
+      <span style="color: #ff008e;">10%</span>
+    </div>
+    <div style="width: 100%; background: #1a1a1a; border-radius: 10px; height: 8px; border: 1px solid #333;">
+      <div style="width: 10%; background: linear-gradient(90deg, #ff008e 0%, #ff8ec7 100%); height: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(255, 0, 142, 0.5);"></div>
+    </div>
+  </div>
+
+  <!-- GUN -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+      <span style="font-weight: bold; color: #ff008e;">P2P Sync (GUN DB)</span>
+      <span style="color: #ff008e;">5%</span>
+    </div>
+    <div style="width: 100%; background: #1a1a1a; border-radius: 10px; height: 8px; border: 1px solid #333;">
+      <div style="width: 5%; background: linear-gradient(90deg, #ff008e 0%, #ff8ec7 100%); height: 100%; border-radius: 10px; box-shadow: 0 0 10px rgba(255, 0, 142, 0.5);"></div>
+    </div>
+  </div>
+
+  <!-- IPFS -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+      <span style="font-weight: bold; color: #666;">IPFS Snapshots</span>
+      <span style="color: #666;">0%</span>
+    </div>
+    <div style="width: 100%; background: #1a1a1a; border-radius: 10px; height: 8px; border: 1px solid #333;">
+      <div style="width: 0%; background: #444; height: 100%; border-radius: 10px;"></div>
+    </div>
+  </div>
+
+  <!-- Obsevability -->
+  <div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+      <span style="font-weight: bold; color: #666;">Observability (Tracing)</span>
+      <span style="color: #666;">0%</span>
+    </div>
+    <div style="width: 100%; background: #1a1a1a; border-radius: 10px; height: 8px; border: 1px solid #333;">
+      <div style="width: 0%; background: #444; height: 100%; border-radius: 10px;"></div>
+    </div>
+  </div>
+
+</div>
 
 ---
 *Última atualização: 14/01/2026*
