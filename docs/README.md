@@ -13,16 +13,12 @@ Acompanhe o estado atual da implementação e as conexões do sistema:
 *   [**Status de Conexões**](./connections_status.md): Detalhamento técnico da conectividade entre o Agente, Bancos de Dados e APIs externas.
 *   [**Roadmap do Projeto**](./ROADMAP.md): Planejamento detalhado dos próximos passos técnicos e progresso por camada.
 
-## 🏗️ Diagramas de Arquitetura (Mermaid)
+## 🏗️ Diagramas de Arquitetura
 
-Representações visuais dos fluxos de dados e estrutura do sistema. Para visualizar, use extensões Mermaid no VS Code ou o [Mermaid Live Editor](https://mermaid.live).
+Representações visuais dos fluxos de dados e estrutura do sistema, renderizadas nativamente pelo GitHub.
 
-*   [**Arquitetura Geral**](./architecture.mmd): Diagrama principal de blocos.
-*   [**Fluxo de Consulta de Lead**](./flow_query_lead.mmd): Lógica de busca de dados.
-*   [**Grafo de Conexões**](./graph_connections_status.mmd): Relacionamento entre serviços.
-*   [**Sequência: Qualificação**](./sequence_qualify_lead.mmd): Fluxo passo a passo de qualificação de leads.
-*   [**Sequência: Consulta**](./sequence_query_lead.mmd): Fluxo de consulta read-only.
-*   [**Mapa Mental: Busca**](./mindmap_query_lead.mmd): Estrutura mental do agente para queries.
+*   [**Visual Overview & Flows**](./DIAGRAMS.md): Central de diagramas (Arquitetura, Sequência, Mindmaps).
+
 
 ## 📖 Guias de Infraestrutura
 
