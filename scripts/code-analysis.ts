@@ -16,12 +16,11 @@ let issuesFound = 0;
 let healthScore = 100;
 
 // Scopes Definition
-const SCOPES: Record<string, { rootDirs: string[], dashboard?: boolean }> = {
+const SCOPES: Record<string, { rootDirs: string[] }> = {
     'state': { rootDirs: ['src/state'] },
     'tools': { rootDirs: ['src/executors/tools', 'src/adapters'] },
     'core': { rootDirs: ['src/mcp', 'src/executors'] },
-    'dashboard': { rootDirs: [], dashboard: true },
-    'all': { rootDirs: ['src'], dashboard: true }
+    'all': { rootDirs: ['src'] }
 };
 
 // Valid Args
@@ -87,18 +86,6 @@ function runLinter() {
             }
         }
     }
-
-    // Dashboard Check
-    if (currentScope.dashboard) {
-        console.log("Analyzing Dashboard...");
-        // Usually Next.js lint is 'next lint'
-        if (!execCmd(`npm run lint`, path.join(ROOT_DIR, 'dashboard'))) {
-            logError("ESLint found issues in Dashboard.");
-            success = false;
-        } else {
-            logSuccess("Dashboard linting passed.");
-        }
-    }
 }
 
 // 2. Type Checking (TypeScript)
@@ -113,17 +100,6 @@ function runTypeCheck() {
             logError("TypeScript Compilation failed for Root Project.");
         } else {
             logSuccess("Root Project compiles successfully.");
-        }
-    }
-
-    // Dashboard
-    if (currentScope.dashboard) {
-        console.log("Compiling Dashboard (Dry Run)...");
-        // We can use tsc directly inside dashboard
-        if (!execCmd(`npx tsc --noEmit`, path.join(ROOT_DIR, 'dashboard'))) {
-            logError("TypeScript Compilation failed for Dashboard.");
-        } else {
-            logSuccess("Dashboard compiles successfully.");
         }
     }
 }

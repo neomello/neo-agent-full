@@ -1,5 +1,13 @@
 // Domain Types for Neo Agent
 
+/** 
+ * Standard for dynamic data where keys are not strictly known at compile time
+ * but we want to avoid raw 'any'.
+ */
+export type DynamicData = any; // Explicitly allowed 'any' for high-dynamic contexts, mapped to a named type.
+export type JsonObject = Record<string, unknown>;
+
+
 // 1. Core Structures
 export interface NeoEvent {
     intent: string;

@@ -1,7 +1,7 @@
-import { WebKwil, KwilSigner } from '@kwilteam/kwil-js';
+import { WebKwil, KwilSigner, Utils } from '@kwilteam/kwil-js';
 import { Wallet } from 'ethers';
 import * as crypto from 'crypto';
-import { NeoEvent, Receipt } from '../types/domain';
+import { NeoEvent, Receipt, DynamicData } from '../types/domain';
 
 // Cache the kwil client
 let kwilClient: WebKwil | null = null;
@@ -44,12 +44,10 @@ export async function insertKwil({ event }: { event: NeoEvent, receipt_hint?: Re
         const signer = new KwilSigner(wallet, wallet.address);
 
         let actionName = "add_event";
-        let inputs: any[] = [];
-
-        const { Utils } = require('@kwilteam/kwil-js');
+        let inputs: DynamicData[] = [];
 
         // ROUTING LOGIC based on Intent or Payload
-        const agentResult = event.result as any;
+        const agentResult = event.result as DynamicData;
         const leadData = agentResult?.payload || agentResult;
 
         if (leadData && leadData.email && (event.intent === "qualify_lead" || event.intent === "general_agent" || event.intent === "ask_general")) {

@@ -1,0 +1,84 @@
+graph TB
+    subgraph "External Input"
+        DASH[Dashboard<br/>neo-agent-dashboard<br/>Next.js]
+        WH[Webhook API<br/>:3000/webhook]
+        CLI[CLI/Scripts]
+    end
+
+    subgraph "NΞØ Agent Core"
+        ROUTER[MCP Router<br/>process_intent]
+        AGENT[LangChain Agent<br/>LangGraph ReAct]
+        
+        subgraph "Agent Tools - 36 total"
+            HUNTER[Hunter.io<br/>Email Verification]
+            TWITTER[Twitter/X API<br/>Social Integration]
+            READER[State Reader<br/>get_lead_data]
+            
+            subgraph "MCP Tools - 33 tools"
+                BRAVE[Brave Search<br/>6 tools]
+                FETCH[Fetch<br/>1 tool]
+                GITHUB[GitHub<br/>26 tools]
+            end
+        end
+    end
+
+    subgraph "State Layer - Implemented ✅"
+        KWIL[(Kwil Database<br/>SQL + Blockchain)]
+        WRITER[State Writer<br/>Multi-target]
+    end
+
+    subgraph "State Layer - Pending ⏳"
+        CERAMIC[(Ceramic Network<br/>DID + Streams)]
+        GUN[(GUN DB<br/>P2P Sync)]
+        IPFS[(IPFS<br/>Web3.Storage)]
+    end
+
+    subgraph "External Services"
+        DOCKER[Docker Containers<br/>MCP Servers]
+        KWIL_NODE[Kwil Node<br/>:8080]
+        POSTGRES[(PostgreSQL<br/>Kwil Backend)]
+    end
+
+    %% Input Flow
+    DASH -->|HTTP POST| WH
+    WH --> ROUTER
+    CLI --> ROUTER
+    
+    %% Agent Flow
+    ROUTER --> AGENT
+    AGENT --> HUNTER
+    AGENT --> TWITTER
+    AGENT --> READER
+    AGENT --> BRAVE
+    AGENT --> FETCH
+    AGENT --> GITHUB
+    
+    %% State Read
+    READER -.->|SELECT| KWIL
+    
+    %% State Write
+    AGENT --> WRITER
+    WRITER -->|create_lead<br/>add_event| KWIL
+    WRITER -.->|TODO| CERAMIC
+    WRITER -.->|TODO| GUN
+    WRITER -.->|TODO| IPFS
+    
+    %% MCP Infrastructure
+    BRAVE --> DOCKER
+    FETCH --> DOCKER
+    GITHUB --> DOCKER
+    
+    %% Kwil Infrastructure
+    KWIL --> KWIL_NODE
+    KWIL_NODE --> POSTGRES
+    
+    %% Styling
+    classDef implemented fill:#00ff88,stroke:#00aa55,stroke-width:3px,color:#000
+    classDef pending fill:#ffaa00,stroke:#ff6600,stroke-width:2px,color:#000
+    classDef external fill:#4488ff,stroke:#0044aa,stroke-width:2px,color:#fff
+    classDef core fill:#ff008e,stroke:#aa0055,stroke-width:3px,color:#fff
+    
+    class KWIL,WRITER,READER,HUNTER,TWITTER,BRAVE,FETCH,GITHUB,DASH implemented
+    class CERAMIC,GUN,IPFS pending
+    class DOCKER,KWIL_NODE,POSTGRES external
+    class ROUTER,AGENT core

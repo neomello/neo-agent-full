@@ -1,5 +1,6 @@
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
+import { DynamicData } from "../types/domain";
 
 export interface MCPConfig {
     name: string;
@@ -65,23 +66,25 @@ export async function loadMCPTools(): Promise<DynamicStructuredTool[]> {
                 allTools.push(new DynamicStructuredTool({
                     name: `mcp_${server.name}_${tool.name}`.replace(/-/g, '_'),
                     description: `${tool.description} (Source: MCP ${server.name})`,
-                    schema: z.any(), // Flexible schema for MCP tools
-                    func: async (args: any) => {
+                    schema: z.any() as any, // Flexible schema for MCP tools
+                    func: async (args: DynamicData) => {
                         try {
                             const result = await client.callTool({
                                 name: tool.name,
                                 arguments: args
                             });
                             return JSON.stringify(result.content);
-                        } catch (err: any) {
-                            return `Error calling MCP tool: ${err.message}`;
+                        } catch (err) {
+                            const error = err as Error;
+                            return `Error calling MCP tool: ${error.message}`;
                         }
                     }
                 }));
             }
             console.log(`[MCP] Loaded ${tools.length} tools from ${server.name}`);
-        } catch (error: any) {
-            console.error(`[MCP] Error connecting to ${server.name}:`, error.message);
+        } catch (error) {
+            const err = error as Error;
+            console.error(`[MCP] Error connecting to ${server.name}:`, err.message);
         }
     }
 

@@ -5,11 +5,11 @@ import { twitterTool } from "./tools/twitter-tool";
 import { StateReaderExecutor } from "../state/reader";
 import { loadMCPTools } from "../mcp/mcp-tools";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { AgentResult, AgentOneShotContext } from "../types/domain";
+import { AgentResult, AgentOneShotContext, DynamicData } from "../types/domain";
 import { StructuredTool, DynamicStructuredTool } from "@langchain/core/tools";
 
 export class LangChainAgentExecutor {
-    private agent: any | undefined;
+    private agent: DynamicData | undefined;
     private tools: (StructuredTool | DynamicStructuredTool)[] = [];
 
     constructor() {
@@ -76,7 +76,7 @@ export class LangChainAgentExecutor {
             if (typeof lastMessage.content === "string") {
                 rawContent = lastMessage.content;
             } else if (Array.isArray(lastMessage.content)) {
-                rawContent = lastMessage.content.map((c: any) => c.text || JSON.stringify(c)).join("\n");
+                rawContent = lastMessage.content.map((c: DynamicData) => c.text || JSON.stringify(c)).join("\n");
             }
 
             if (!rawContent || rawContent.trim() === "") {

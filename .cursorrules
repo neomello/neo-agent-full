@@ -19,3 +19,9 @@
 * **Database:** Kwil (Web3 SQL), Ceramic, IPFS.
 * **Frontend:** Next.js, React, Tailwind.
 * **Tools:** Docker, Makefile automation.
+
+## 4. Coding Standards (NΞØ Standards)
+* **Dynamic Typing:** NUNCA use `any` cru. Utilize o tipo `DynamicData` (importado de `src/types/domain.ts`) para contextos dinâmicos (IA, Web3).
+* **Error Handling:** NUNCA use `catch (error: any)`. Use `catch (error)` com `const err = error as Error`.
+* **Imports:** Use exclusivamente `import/export`. Proibido `require()`.
+* **Audit Score:** Mantenha sempre o `NΞØ Health Score` em 100/100 (`npm run audit`).

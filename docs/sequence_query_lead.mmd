@@ -1,0 +1,38 @@
+sequenceDiagram
+    participant DASH as Dashboard<br/>(Next.js)
+    participant WH as Webhook API<br/>:3000/webhook
+    participant ROUTER as MCP Router
+    participant AGENT as LangChain Agent
+    participant READER as State Reader
+    participant KWIL as Kwil Database
+
+    Note over DASH,KWIL: User queries existing lead data
+
+    DASH->>WH: POST /webhook<br/>{intent: "ask_general", context: {message: "Mostre dados de alice@example.com"}}
+    activate WH
+    WH->>ROUTER: process_intent(intent, context)
+    activate ROUTER
+    
+    ROUTER->>AGENT: execute(intent, context)
+    activate AGENT
+    
+    Note over AGENT: Agent interprets query and calls tool
+    AGENT->>READER: get_lead_data("alice@example.com")
+    activate READER
+    READER->>KWIL: SELECT * FROM leads WHERE email = 'alice@example.com'
+    activate KWIL
+    KWIL-->>READER: [{id, email, name, company, score, created_at}]
+    deactivate KWIL
+    READER-->>AGENT: JSON with lead data
+    deactivate READER
+    
+    Note over AGENT: Agent formats response
+    AGENT-->>ROUTER: {action: "response", payload: {}, response_text: "Alice trabalha na..."}
+    deactivate AGENT
+    
+    ROUTER-->>WH: {status: "success", agent_response: {...}}
+    deactivate ROUTER
+    WH-->>DASH: 200 OK<br/>{status: "success", agent_response: {...}}
+    deactivate WH
+    
+    Note over DASH: Dashboard displays lead information

@@ -1,0 +1,60 @@
+# NΞØ Agent - Project Roadmap
+
+Este documento centraliza o progresso do desenvolvimento e detalha os próximos passos técnicos para levar o **NΞØ Agent** ao estado de "Full Decentralized State".
+
+---
+
+## ✅ O que já foi alcançado (Highlights)
+
+-   **🧠 Core Intelligence**: Agente ReAct implementado com LangGraph e Gemini (Flash Lite) para estabilidade de quota.
+-   **🔌 MCP Integration**: Conexão total com Model Context Protocol para busca (Brave), leitura de código (GitHub) e análise de conteúdo (Fetch).
+-   **💾 Kwil State Layer**: Integração real com Kwil v0.9+ para persistência estruturada de leads e eventos.
+-   **🔗 Webhook Gateway**: Adaptador Express para comunicação fluida com o Dashboard externo.
+-   **🧹 Project Hygiene**: Repositório limpo, scripts de auditoria funcional e documentação organizada.
+
+---
+
+## 🚀 Próximos Passos (Especificações Técnicas)
+
+### 1. 💎 Ceramic Network: Autenticação & Streams
+*Foco: Identidade descentralizada e log de eventos auditável.*
+
+-   **Implementação de DID-Session**: Migrar do DID estático para sessões autenticadas via `did-session`, permitindo que o agente assine logs em nome de um usuário ou dele mesmo.
+-   **Event Streams**: Substituir o log simulado em `src/state/ceramic.ts` por criação real de streams no Ceramic (Clay Testnet ou Mainnet). 
+-   **Persistence**: Cada ação importante do agente deve gerar um `stream_id` único para garantir que o histórico seja imutável e descentralizado.
+
+### 2. 🔫 GUN DB: Sincronização P2P em Tempo Real
+*Foco: Redundância e comunicação Agent-to-Dashboard sem intermediários.*
+
+-   **Relay Node Configuration**: Configurar um par de relay nodes estáveis para assegurar a propagação dos dados.
+-   **Lead Propagation**: Ao salvar um lead no Kwil, o agente deve disparar um `.put()` no GUN no gráfico `leads/active`.
+-   **Dashboard Sync**: O dashboard deve ouvir (`.on()`) as mudanças no GUN para atualizar a UI instantaneamente, eliminando o delay do polling de banco de dados.
+
+### 3. 📦 Web3 Storage (IPFS): Snapshots de Estado
+*Foco: Disponibilidade permanente de dados volumosos.*
+
+-   **W3UP Client Integration**: Implementar o fluxo de upload usando `@web3-storage/w3up-client`.
+-   **Daily Snapshots**: Criar um cron-job (ou trigger por volume) que agrupe leads/logs do dia, gere um arquivo JSON e faça upload para o IPFS.
+-   **CID Referencing**: O CID gerado pelo IPFS deve ser salvo como um evento especial no Kwil/Ceramic para fechar o ciclo de auditabilidade.
+
+### 📊 4. Observabilidade & Saúde do Sistema
+*Foco: Monitoramento de performance e custo.*
+
+-   **LangSmith Tracing**: Habilitar o tracing completo para analisar o custo por token e a assertividade das chamadas de ferramentas.
+-   **Prometheus Metric Scraper**: Expor um endpoint `/metrics` no servidor Express para coletar latência de API e taxa de erro do modelo Gemini.
+
+---
+
+## 📈 Tabela de Progresso
+
+| Camada | Funcionalidade | Status | Prioridade |
+| :--- | :--- | :--- | :--- |
+| **State** | SQL Persistence (Kwil) | ✅ 100% | - |
+| **State** | DID Streams (Ceramic) | 🔴 10% | 🔥 Alta |
+| **State** | P2P Sync (GUN) | 🔴 5% | 🟡 Média |
+| **Tools** | MCP Web/GitHub | ✅ 100% | - |
+| **Infra** | IPFS Snapshots | 🔴 0% | 🔵 Baixa |
+| **Audit** | Prompt Tracing | 🔴 0% | 🟡 Média |
+
+---
+*Última atualização: 14/01/2026*

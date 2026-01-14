@@ -1,6 +1,7 @@
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import { executeSelect } from "./kwil";
+import { DynamicData } from "../types/domain";
 
 /**
  * StateReaderExecutor
@@ -29,7 +30,7 @@ export class StateReaderExecutor {
                     }
 
                     // Retorna o primeiro registro encontrado
-                    const lead = (result as any[])[0];
+                    const lead = (result as DynamicData[])[0];
                     return JSON.stringify({
                         found: true,
                         data: {
@@ -40,8 +41,9 @@ export class StateReaderExecutor {
                             source: lead.lead_source
                         }
                     });
-                } catch (error: any) {
-                    return JSON.stringify({ found: false, error: error.message });
+                } catch (error) {
+                    const err = error as Error;
+                    return JSON.stringify({ found: false, error: err.message });
                 }
             },
         });

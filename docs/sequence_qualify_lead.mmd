@@ -1,0 +1,62 @@
+sequenceDiagram
+    participant DASH as Dashboard<br/>(Next.js)
+    participant WH as Webhook API<br/>:3000/webhook
+    participant ROUTER as MCP Router
+    participant AGENT as LangChain Agent
+    participant READER as State Reader
+    participant KWIL as Kwil Database
+    participant BRAVE as Brave Search<br/>(MCP)
+    participant HUNTER as Hunter.io
+    participant WRITER as State Writer
+
+    Note over DASH,WRITER: User qualifies a lead via Dashboard
+
+    DASH->>WH: POST /webhook<br/>{intent: "qualify_lead", context: {...}}
+    activate WH
+    WH->>ROUTER: process_intent(intent, context)
+    activate ROUTER
+    
+    ROUTER->>AGENT: execute(intent, context)
+    activate AGENT
+    
+    Note over AGENT: Agent decides to check if lead exists
+    AGENT->>READER: get_lead_data(email)
+    activate READER
+    READER->>KWIL: SELECT * FROM leads WHERE email = ?
+    activate KWIL
+    KWIL-->>READER: [] (not found)
+    deactivate KWIL
+    READER-->>AGENT: "Lead not found"
+    deactivate READER
+    
+    Note over AGENT: Agent decides to search for company info
+    AGENT->>BRAVE: brave_web_search(query: "company name")
+    activate BRAVE
+    BRAVE-->>AGENT: {results: [...]}
+    deactivate BRAVE
+    
+    Note over AGENT: Agent decides to verify email
+    AGENT->>HUNTER: verifyEmail(email)
+    activate HUNTER
+    HUNTER-->>AGENT: {valid: true, score: 95}
+    deactivate HUNTER
+    
+    Note over AGENT: Agent qualifies lead and returns JSON
+    AGENT-->>ROUTER: {action: "write", payload: {email, name, company, score: 99}}
+    deactivate AGENT
+    
+    ROUTER->>WRITER: write(payload, targets: ["kwil"])
+    activate WRITER
+    WRITER->>KWIL: execute("create_lead", inputs)
+    activate KWIL
+    KWIL-->>WRITER: {tx_hash: "0x..."}
+    deactivate KWIL
+    WRITER-->>ROUTER: {kwil_id: "0x...", ceramic_stream_id: null}
+    deactivate WRITER
+    
+    ROUTER-->>WH: {status: "success", agent_response: {...}, state_receipt: {...}}
+    deactivate ROUTER
+    WH-->>DASH: 200 OK<br/>{status: "success", ...}
+    deactivate WH
+    
+    Note over DASH: Dashboard updates UI with new lead

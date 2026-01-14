@@ -1,3 +1,5 @@
+<div align="center">
+
 # NΞØ Agent Full
 
 **NΞØ Agent Template - State Layer v2.5**
@@ -21,94 +23,23 @@ If the process dies, memory does not.
 
 ## What you get
 
-* **Persistent Memory**: Kwil SQL database for lead management and state
-* **External Intelligence**: 33+ tools via MCP (Brave Search, GitHub, Fetch)
-* **Autonomous Reasoning**: LangGraph ReAct agent with tool calling
-* **Multi-Layer State**: Ceramic, GUN, IPFS support for decentralized persistence
-* **Production Ready**: Webhook API, structured JSON responses, error recovery
-
-This repository does not document the agent.
-It **runs** it.
+*   **Persistent Memory**: Kwil SQL database for lead management and state
+*   **External Intelligence**: 33+ tools via MCP (Brave Search, GitHub, Fetch)
+*   **Autonomous Reasoning**: LangGraph ReAct agent with tool calling
+*   **Multi-Layer State**: Ceramic, GUN, IPFS support for decentralized persistence
+*   **Production Ready**: Webhook API, structured JSON responses, error recovery
 
 ---
 
-## Quick Start
+## Get Started
 
-```bash
-# Clone the repository
-git clone https://github.com/neomello/neo-agent-full.git
-cd neo-agent-full
-
-# Install dependencies
-npm install
-
-# Copy environment template
-cp .env.example .env
-# Edit .env with your API keys
-
-# Start Kwil database
-docker-compose up -d
-
-# Deploy Kwil schema
-npx ts-node scripts/deploy-kwil.ts
-
-# Run the agent
-npm run dev
-```
-
-Secrets are externalized by design.
-See [`.env.example`](.env.example) for required configuration.
-
----
-
-## Configuration
-
-### Required Environment Variables
-
-```env
-GOOGLE_API_KEY=your_google_ai_key
-LLM_MODEL=gemini-flash-lite-latest
-KWIL_PROVIDER=http://127.0.0.1:8080
-KWIL_PRIVATE_KEY=your_private_key
-KWIL_DB_ID=your_deployed_db_id
-```
-
-### Optional MCP Tools
-
-```env
-BRAVE_API_KEY=your_brave_search_key
-GITHUB_TOKEN=your_github_token
-HUNTER_API_KEY=your_hunter_key
-```
-
-New machine. Same memory.
-
----
-
-## Testing
-
-```bash
-# E2E test for Kwil integration
-npx ts-node scripts/test-e2e-write.ts
-
-# Test agent via webhook
-curl -X POST http://localhost:3000/webhook \
-  -H "Content-Type: application/json" \
-  -d '{
-    "intent": "qualify_lead",
-    "context": {
-      "message": "Qualifique Alice da TechCorp",
-      "sender": "user@example.com"
-    }
-  }'
-```
+For installation instructions and testing procedures, please refer to the [**Setup & Testing Guide**](./docs/SETUP_TESTING.md).
 
 ---
 
 ## Documentation
 
-- [Checkpoint 9: MCP Integration](docs/checkpoint_9_mcp_integration.md)
-- [Architecture Overview](docs/architecture_checkpoint_2026_01_05.md)
+Explore the technical details and guides in the [**Documentation folder**](./docs/README.md).
 
 ---
 
@@ -120,36 +51,7 @@ curl -X POST http://localhost:3000/webhook \
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    NΞØ Agent System                         │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐ │
-│  │   Webhook    │───▶│  MCP Router  │───▶│  LangChain   │ │
-│  │   Adapter    │    │              │    │    Agent     │ │
-│  └──────────────┘    └──────────────┘    └──────┬───────┘ │
-│                                                  │         │
-│                                                  ▼         │
-│  ┌──────────────────────────────────────────────────────┐ │
-│  │              Agent Tools (36 total)                  │ │
-│  ├──────────────────────────────────────────────────────┤ │
-│  │ • Hunter Email Verification                          │ │
-│  │ • Twitter/X Integration                              │ │
-│  │ • Kwil State Reader                                  │ │
-│  │ • Brave Search (6 tools)                             │ │
-│  │ • Fetch (1 tool)                                     │ │
-│  │ • GitHub (26 tools)                                  │ │
-│  └──────────────────────────────────────────────────────┘ │
-│                                                  │         │
-│                                                  ▼         │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐ │
-│  │     Kwil     │    │   Ceramic    │    │     GUN      │ │
-│  │   Database   │    │   Network    │    │      DB      │ │
-│  └──────────────┘    └──────────────┘    └──────────────┘ │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+<img src="./docs/assets/architecture.png" alt="NΞØ Agent Architecture" width="800px" style="border-radius: 10px; margin: 20px 0;" />
 
 ---
 
@@ -170,9 +72,9 @@ This work is public, but it is not free.
 
 Sponsoring means supporting:
 
-* Autonomous agents with persistent memory
-* Decentralized state management patterns
-* Infrastructure that outlives processes
+*   Autonomous agents with persistent memory
+*   Decentralized state management patterns
+*   Infrastructure that outlives processes
 
 You are not sponsoring a person.
 You are sponsoring a **protocol**.
@@ -193,23 +95,27 @@ If this agent saved you time, prevented data loss, or clarified your AI workflow
 
 [neo@neoprotocol.space](mailto:neo@neoprotocol.space)
 
-<div align="center">
-  <a href="https://x.com/node_mello">
-    <img src="https://img.shields.io/badge/-@node_mello-ff008e?style=flat-square&logo=twitter&logoColor=white" alt="Twitter @node_mello" />
-  </a>
-  <a href="https://www.instagram.com/neoprotocol.eth/">
-    <img src="https://img.shields.io/badge/-@neoprotocol.eth-ff008e?style=flat-square&logo=instagram&logoColor=white" alt="Instagram @neoprotocol.eth" />
-  </a>
-  <a href="https://etherscan.io/">
-    <img src="https://img.shields.io/badge/-neomello.eth-ff008e?style=flat-square&logo=ethereum&logoColor=white" alt="Ethereum neomello.eth" />
-  </a>
-</div>
+<br/>
 
-<div align="center">
-  <i>"Expand until silence becomes structure."</i>
-</div>
+<a href="https://x.com/node_mello">
+  <img src="https://img.shields.io/badge/-@node_mello-ff008e?style=flat-square&logo=twitter&logoColor=white" alt="Twitter @node_mello" />
+</a>
+<a href="https://www.instagram.com/neoprotocol.eth/">
+  <img src="https://img.shields.io/badge/-@neoprotocol.eth-ff008e?style=flat-square&logo=instagram&logoColor=white" alt="Instagram @neoprotocol.eth" />
+</a>
+<a href="https://etherscan.io/">
+  <img src="https://img.shields.io/badge/-neomello.eth-ff008e?style=flat-square&logo=ethereum&logoColor=white" alt="Ethereum neomello.eth" />
+</a>
+
+<br/>
+
+<i>"Expand until silence becomes structure."</i>
+
+<br/>
 
 ---
 
 > This agent evolves.
 > Forgetfulness does not.
+
+</div>

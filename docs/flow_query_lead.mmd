@@ -1,0 +1,36 @@
+flowchart LR
+    subgraph "Frontend"
+        DASH[Dashboard<br/>Next.js]
+    end
+    
+    subgraph "Backend API"
+        WH[POST /webhook<br/>:3000]
+        ROUTER[MCP Router<br/>process_intent]
+    end
+    
+    subgraph "Agent Core"
+        AGENT[LangChain Agent<br/>Interprets Query]
+        READER[State Reader Tool<br/>get_lead_data]
+    end
+    
+    subgraph "Database"
+        KWIL[(Kwil DB<br/>SELECT query)]
+    end
+    
+    DASH -->|"POST /webhook<br/>{intent: 'ask_general',<br/>message: 'Mostre alice@example.com'}"| WH
+    WH -->|process_intent| ROUTER
+    ROUTER -->|execute| AGENT
+    AGENT -->|"get_lead_data<br/>('alice@example.com')"| READER
+    READER -->|"SELECT * FROM leads<br/>WHERE email = ?"| KWIL
+    KWIL -->|"[{id, email, name,<br/>company, score}]"| READER
+    READER -->|JSON data| AGENT
+    AGENT -->|"{action: 'response',<br/>response_text: '...'}"| ROUTER
+    ROUTER -->|"{status: 'success',<br/>agent_response: {...}}"| WH
+    WH -->|200 OK| DASH
+    
+    style DASH fill:#00ff88,stroke:#00aa55,stroke-width:3px
+    style WH fill:#ff008e,stroke:#aa0055,stroke-width:3px
+    style ROUTER fill:#ff008e,stroke:#aa0055,stroke-width:3px
+    style AGENT fill:#ff008e,stroke:#aa0055,stroke-width:3px
+    style READER fill:#00ff88,stroke:#00aa55,stroke-width:3px
+    style KWIL fill:#00ff88,stroke:#00aa55,stroke-width:3px

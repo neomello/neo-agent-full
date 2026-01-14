@@ -1,0 +1,43 @@
+mindmap
+  root((Query Lead Flow))
+    Frontend
+      Dashboard Next.js
+        User Input
+          "Mostre dados de alice@example.com"
+        HTTP Request
+          POST /webhook
+          intent: ask_general
+          context: message
+    Backend API
+      Webhook :3000
+        Receives POST
+        Validates request
+      MCP Router
+        process_intent
+        Routes to Agent
+    Agent Processing
+      LangChain Agent
+        Interprets query
+        Decides to use tool
+        Calls get_lead_data
+      State Reader Tool
+        Receives email param
+        Builds SQL query
+        Executes on Kwil
+    Database Layer
+      Kwil Database
+        SELECT * FROM leads
+        WHERE email = ?
+        Returns JSON array
+    Response Flow
+      Agent Formats
+        action: response
+        payload: empty
+        response_text: formatted
+      Router Returns
+        status: success
+        agent_response: object
+      Dashboard Updates
+        Displays lead info
+        Shows company, score
+        Updates UI state
